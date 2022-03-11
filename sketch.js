@@ -271,7 +271,7 @@ function mousePressed() {
     }
     if (selected.length === 3) {
         if (gameDeck.isSet(selected)) {
-            if (mousePressWithin(866, 570, 144, 50)) {
+            if (mousePressWithin(938, 570, 144, 50)) {
                 hint = false;
                 collected++;
                 for (let card of selected) {
@@ -285,7 +285,7 @@ function mousePressed() {
             }
         }
     } else {
-        if (mousePressWithin(866, 570, 144, 50)) {
+        if (mousePressWithin(938, 570, 144, 50)) {
             hint = true;
         }
     }
