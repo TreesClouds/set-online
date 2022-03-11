@@ -27,17 +27,9 @@ class Card {
     get PlayIndex () {
         return this.playIndex;
     }
-    
+
     set PlayIndex (pi) {
         this.playIndex = pi;
-    }
-
-    get Selected() {
-        return this.selected;
-    }
-
-    set Selected (s) {
-        this.selected = s;
     }
 
     get getImage() {
@@ -139,6 +131,8 @@ let selected;
 let selectedSpots;
 let collected;
 let hint;
+let hinted;
+let possible;
 
 function get12Cards() {
     for (let i = 0; i < 12; i++) {
@@ -212,7 +206,9 @@ function setup() {
     selected = [];
     selectedSpots = [780, 938, 1096];
     collected = 0;
+    possible = 27;
     hint = false;
+    hinted = false;
     get12Cards();
 }
 
@@ -241,13 +237,17 @@ function draw() {
             fill("white");
             text("This is not a valid set", 1010, 200);
         }
-    } else {
+    } else if (selected.length === 0) {
         fill("gray")
         rect(938, 570, 144, 50);
         fill("white");
         text("HINT", 1010, 600);
+        textSize(12);
+        text("(Does not earn a point)", 1010, 640);
     }
-    text("Sets Collected: " + collected + "/27", 1010, 100);
+    fill("white");
+    textSize(18);
+    text("Sets Collected: " + collected + "/" + possible, 1010, 100);
 }
 
 function mousePressed() {
@@ -272,8 +272,13 @@ function mousePressed() {
     if (selected.length === 3) {
         if (gameDeck.isSet(selected)) {
             if (mousePressWithin(938, 570, 144, 50)) {
-                hint = false;
-                collected++;
+                if (!hinted) {
+                    collected++;
+                } else {
+                    hint = false;
+                    hinted = false;
+                    possible--;
+                }
                 for (let card of selected) {
                     if (gameDeck.getCardsLeft !== 0) {
                         let nc = gameDeck.getCard();
@@ -284,9 +289,10 @@ function mousePressed() {
                 selected = [];
             }
         }
-    } else {
+    } else if (selected.length === 0) {
         if (mousePressWithin(938, 570, 144, 50)) {
             hint = true;
+            hinted = true;
         }
     }
 }
