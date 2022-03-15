@@ -39,7 +39,7 @@ class Card {
     hint() {
         let ind = inPlay.findIndex((element) => element === this);
         let p = getCardPos(ind);
-        rect(p[0]-4, p[1]-4, 148+6, 244+6);
+        rect(p[0]-4, p[1]-4, 154, 250);
     }
 }
 
@@ -145,18 +145,20 @@ function get12Cards() {
 function getCardPos(ind) {
     let cw = 144;
     let ch = 240;
-    let placeX = 10 + cw / 4;
-    let placeY = 10 + ch / 4;
+    let placeX = 80;
+    let placeY = 10;
     let card = 0;
+
+    let tempPlaceX = placeX;
     for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 4; col++) {
             if (card === ind) {
-                return [placeX, placeY]
+                return [tempPlaceX, placeY]
             }
-            placeX = placeX + cw + 10;
+            tempPlaceX = tempPlaceX + cw + 10;
             card++;
         }
-        placeX = 10 + cw / 4;
+        tempPlaceX = placeX;
         placeY = placeY + ch + 10;
     }
     return -1;
@@ -226,28 +228,37 @@ function draw() {
     placeCards();
     updateSelectedCards();
     textSize(18);
+    fill("white");
     if (selected.length === 3) {
         if (gameDeck.isSet(selected)) {
-            fill("gray")
-            rect(938, 570, 144, 50);
-            fill("white");
             text("This is a valid set", 1010, 200);
-            text("DISCARD", 1010, 600);
+            buttonPlacement("#282828", "gray");
+
         } else {
-            fill("white");
             text("This is not a valid set", 1010, 200);
+            buttonPlacement("#282828", "#282828");
         }
     } else if (selected.length === 0) {
-        fill("gray")
-        rect(938, 570, 144, 50);
-        fill("white");
-        text("HINT", 1010, 600);
-        textSize(12);
-        text("(Does not earn a point)", 1010, 640);
+        buttonPlacement("gray", "#282828");
+        // Enable hint
+    } else {
+        buttonPlacement("#282828", "#282828");
     }
     fill("white");
     textSize(18);
     text("Sets Collected: " + collected + "/" + possible, 1010, 100);
+}
+
+function buttonPlacement(r1, r2) {
+    fill(r1)
+    rect(938-80, 570, 144, 50);
+    fill(r2)
+    rect(938+80, 570, 144, 50);
+    fill("white");
+    text("DISCARD", 1010+80, 600);
+    text("HINT", 1010-80, 600);
+    textSize(12);
+    text("(Does not earn a point)", 1010-80, 640);
 }
 
 function mousePressed() {
@@ -267,11 +278,12 @@ function mousePressed() {
             let c = selected[i];
             selected.splice(i, 1);
             inPlay[c.PlayIndex] = c;
+            break;
         }
     }
     if (selected.length === 3) {
         if (gameDeck.isSet(selected)) {
-            if (mousePressWithin(938, 570, 144, 50)) {
+            if (mousePressWithin(938+80, 570, 144, 50)) {
                 if (!hinted) {
                     collected++;
                 } else {
@@ -290,7 +302,7 @@ function mousePressed() {
             }
         }
     } else if (selected.length === 0) {
-        if (mousePressWithin(938, 570, 144, 50)) {
+        if (mousePressWithin(938-80, 570, 144, 50)) {
             hint = true;
             hinted = true;
         }
